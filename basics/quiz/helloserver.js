@@ -29,3 +29,7 @@ const server = http.createServer((req, res) => {
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 })
+
+// single threaded, synchronous requests
+// node - one thread, use async functions to yield to worker threads
+// as efficient as multithreaded functions
