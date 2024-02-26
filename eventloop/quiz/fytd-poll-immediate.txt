@@ -1,2 +1,24 @@
 - Explain the order of execution in terms of the event loop for eventloop/immediate.js.
+    - First, the readfile I/O operation is scheduled in the poll phase
+    - readFile happens in worker thread
+        - Meanwhile, nothing passed in main thread
+    - readfile completes, pending callback added to pending call back, event loop runs
+    - Within that readfile on worker thread, there is first a delay of 10 ms
+    - To be output, the data is logged synchronously
+    - Then setTimeout is added to poll (this is not I/O) with a timeout of 5 - scheudle timeout
+        - corresponding call pack added to timers phase
+    - Then the setImmediate callback is added to poll (to check stage)
+        - corresponding callback added to check phase queue
+    - Once the synchronous functions have executed, the
+        - check phase executes the call back
+        - now the timer is complete so the timer callback is added to pending call back and executes
+
 - Will the order of execution change if timeout is changed to 0? Why or why not?
+
+No, the setImmediate in the check phase will still have priority over timers/poll
+
+- Can you make immediate run first?
+Yes, if the console.log(data) is made async
+Or if the setImmediate is run outside the file read function, then it gets put to check phase.
+While the poll deals with file.read, check gets the immediate callback before the File I/O call back is added
+to pending callbacks. So the immediate call back is then added to pending call back and gets executed first.
