@@ -1,1 +1,25 @@
 - In eventloop/timer.js, what will be the order of execution? Briefly explain the order of execution w.r.t the event loop phases.
+
+'foo'
+'baz'
+'foo'
+'baz'
+'2 : bar'
+'1 : bar'
+
+- Program runs synchronously (Main I/O Loop)
+    - 'foo' output to console immediately
+    - async call with 2 added to queue
+    - 'baz' output to console
+    - 'foo' output to console immediately
+    - async call with 1 added to queue
+    - 'baz' output to console
+
+Event Loop - after the main loop is done
+- setTimeout is a call back, once main synchronous thread executes
+we run things in pending callbacks
+    - no I/O operation run, so event loop is run after main
+    - no poll, goes to pending callbacks (which exist now)
+    - Runs these in order to execute bar(2) then bar(1)
+
+Note: run with node eventloop/timer.js
