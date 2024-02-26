@@ -1,1 +1,23 @@
 - In eventloop/poll.js, what will be the order of execution? Briefly explain the order of execution w.r.t the event loop phases.
+
+Output:
+
+foot
+done
+Read Error
+
+Explanation of how this runs
+- Main loop
+    - someAsyncOperation
+        - When we see an async method, it is pushed to poll phase
+    - foo (sync)
+        - executes console.log 'foo'
+    - console.log (sync)
+        - executes console.log 'done'
+
+Now - The main loop is done
+- We see an async I/O operation
+    - Callback pushed to pending callbacks queue I/O
+- Pending callback executes
+
+- Starting the event loop delays everything
