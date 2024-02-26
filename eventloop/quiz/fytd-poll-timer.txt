@@ -1,3 +1,17 @@
 - Explain the order of execution in terms of the event loop for eventloop/poll_timer.js.
+
+First, the setTimeout function is sent to the event loop. Since it has a callback (should be evaluated after the timeout). 
+This is something that the poll looks out for. someAsync is also added to poll. The file read in poll will be 
 - Will the order of execution change if the delay in the while loop is changed from 10s to 150s? Why or why not?
+
+No, the timeout is still slower than the time it takes to read the file.
+
 - Will the order of execution change if timeout is changed to 0? Why or why not?
+
+Yes - the file read isn't as fast as the timeout execution.
+
+If nothing in pending callback, timeouts take next priority. Poll has no queue, it is process of waiting
+for I/O events. When readfile seen, that is performed (on worker?) and could be other things on other queues.
+On timers queue, only executed after timeout is completed. Things can be moved onto pending call backs
+once completed. I/O events in poll processed first in poll. If I/O finishes corresponding callback placed
+in pending callbacks. File operation always happens first, but if timeout is faster we will see it first
